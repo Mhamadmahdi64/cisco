@@ -1,0 +1,78 @@
+all configuration for university campus project:
+
+1- turn on the interface in router :
+int se0/1/0
+no sh
+do wr
+(repeat same process in all routers interfaces)
+
+2-set up clock rate in serial interfaces :
+int se0/1/0
+clock rate 64000
+do wr
+
+3-configure vlan into switches :
+en
+conf t 
+int range fa0/1-24
+switchport mode access 
+switchport access vlan10
+do wr
+(repeat same process in all switches and make sure to change vlan)
+
+4-configure vlan into switch layer 3:
+en
+conf t 
+int gig1/0/2 
+switchport mode access 
+switchport access vlan 10
+do wr
+(repeat same process in all interfaces and make sure to change vlan)
+
+5-configuration between switchlayer3 and router :
+en
+conf t 
+int gig1/0/1 ( locate the inteface between router and switchlayer3)
+switchport trunk encapsulation dot1q
+switchport mode trunk
+ex 
+do wr
+
+6-configure ip between routers :
+en 
+conf t 
+int se0/1/1 (locate the interface between routers)
+ip address 10.10.10.1 255.255.255.252 (ip address change according to the network ip add in this example 10.10.10.0/30)
+do wr
+
+7-configure ip for vlan into router :
+en
+int gig0/0.100 ( replace interface )
+encapsualtion dot1q 100
+ip address 192.168.10.1 255.255.255.0 ( network used 192.168.10.0/24)
+ex 
+do wr
+
+8- configure dhcp pool in router for network :
+en
+conf t
+service dhcp
+ip dhcp pool staf-pool(staf is a variable you can chage the name to whatever you want)
+network 192.168.9.0 255.255.255.0 ( will make dhcp for netwrok 192.168.9.0/24 , vlan 9)
+default-router 192.168.9.1
+dns-server 192.168.9.1
+ex
+do wr
+
+9-configure ripv2 between network and into router :
+en ( enable router Branch campusr outer )
+conf t 
+router rip ( for all netwrok inc into branch cammpus router)
+version 2
+network 192.168.9.0
+network 192.168.10.0
+network 10.10.10.0
+ex
+do wr
+
+
