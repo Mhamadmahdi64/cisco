@@ -1,0 +1,65 @@
+1- configure the basic conf to the devices :
+a-hostname IT-Department ( you can chose any name u want )
+b-line console 0
+   password cisco@123 ( you can chose any pass u want )
+   login
+   exec-timeout 3 0 ( exit timeout after 3 minutes and zero second )
+   logging synchronous
+c- vty password :
+    line vty 0 4 
+    password cisco@123 ( you can chose any pass u want )
+    login
+    exec-timeout 3 0 ( exit timeout after 3 minutes and zero second )
+    logging synchronous
+d-banner motd # this switch is for it department # ( you can put any msgs u want )
+e- no ip domain lookup 
+
+2-config vtp for vlan in switches : 
+en
+conf t
+vtp domain gtech
+vtp mode server ( make the switch as a vtp server )
+do wr
+3-config vlan into vtp server :( in this ex will make it department as vtp mode server and the other switches as vtp mode client )
+vlan 10 
+name IT ( name the vlan 10 as IT )
+vlan 20
+name Research
+vlan 30
+name Electrical
+vlan 40 
+name Marketing
+vlan 50 
+name Accounting
+vlan 60 
+name Finance
+vlan 70
+name Logistic
+vlan 80 
+name Customer
+do wr
+do show vlan ( to show vlan configure into switch )
+4-conf other switches as client :
+vtp domain gtech
+vtp mode client 
+do wr
+5- enable trunk mode interfaces for switches :
+conf t
+int range fa0/1-2
+switchport mode trunk
+do wr
+6- enable trunk in switchlayer3 :
+en
+conf t
+int range gigabitethernet1/0/1-24
+switchport mode trunk
+do wr
+7-now we can add any vlan in the VTP mode server ( it -department on this case ) and we can see it om all switches
+8-vtp pruning ( allow and denied vlan in ports)
+en
+conf t
+int range FA0/1-2 ( port for switch in our example to allowed trunk vlan on it)
+switchport trunk allowed vlan 1,10,20,30,40,50,60,70
+do wr
+exit
+
